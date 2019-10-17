@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="post">
+
+	<insert id="insertPost" parameterType="postvo">
+		<![CDATA[
+			insert into post values(null, #{title}, #{contents}, now(), #{categoryNo})
+		]]>
+	</insert>
+	
+	
+	<select id="allPostList" parameterType="string" resultType="postvo">
+	<![CDATA[
+		select post.no, post.title, post.contents, date_format(post.postdate, "%Y년 %m월 %d일") as postdate, post.category_no as categoryNo
+		from post 
+		inner join category on post.category_no = category.no 
+		where category.id=#{userId}
+		order by post.no desc;
+	 ]]>	
+	</select>
+	
+	<select id="defaultPost" parameterType="map" resultType="postvo">
+	<![CDATA[
+		select post.no, post.title, post.contents, date_format(post.postdate, "%Y년 %m월 %d일") as postdate, post.category_no as categoryNo
+		from post 
+		left join category 
+		on post.category_no = category.no 
+		where category.id = #{userId} 
+		]]>	
+		<if test="categoryNo != null">
+		<![CDATA[
+    	and post.category_no=${categoryNo} 
+    	]]>
+  		</if>
+  		<![CDATA[
+		order by post.no desc limit 1;
+	 	]]>	
+	</select>
+	
+	
+	<select id="getPost" parameterType="map" resultType="postvo">
+	<![CDATA[
+		select no, title, contents, category_no as categoryNo
+		from post
+		where category_no = ${categoryNo }
+		and no = #{postNo }
+	 ]]>	
+	</select>
+
+	<select id="caNoPost" parameterType="long" resultType="postvo">
+	<![CDATA[
+		select no, title, contents, date_format(post.postdate, "%Y년 %m월 %d일") as postdate, category_no as categoryNo
+		from post 
+		where category_no = #{categoryNo }
+	 ]]>	
+	</select>
+	
+
+</mapper>

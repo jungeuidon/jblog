@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="blog">
+	
+	<insert id="insert" parameterType="blogvo">
+		<![CDATA[
+			insert into blog values(#{id}, #{name}"의 블로그 입니다", "default.jpg")
+		]]>
+	</insert>
+	
+	
+	<select id="getBlog" parameterType="string" resultType="blogvo">
+	<![CDATA[
+		select id, title, logo 
+		from blog
+		where id=#{userId}
+	 ]]>	
+	</select>
+	
+	<select id="updateBlog" parameterType="map">
+	<![CDATA[
+		update blog set title = #{title }, logo = #{logo}
+		where id=#{userId}
+	 ]]>	
+	</select>
+	
+	<select id="allPostList" parameterType="string" resultType="postvo">
+	<![CDATA[
+		select post.title, post.contents, date_format(post.postdate, "%Y년 %m월 %d일") as postdate 
+		from post 
+		left join category on post.category_no = category.no 
+		where category.id=#{userId} 
+		order by post.no desc;
+	 ]]>	
+	</select>
+	
+	<select id="defaultPost" parameterType="string" resultType="postvo">
+	<![CDATA[
+		select post.title, post.contents, date_format(post.postdate, "%Y년 %m월 %d일") as postdate 
+		from post 
+		left join category 
+		on post.category_no = category.no 
+		where category.id = #{userId} 
+		 ]]>
+		<if test="#{categoryNo}">
+			and 
+		</if>
+		<![CDATA[
+		order by post.no desc limit 1;
+	 ]]>	
+	</select>
+	
+	
+	<select id="getPost" parameterType="map" resultType="postvo">
+	<![CDATA[
+		select title, contents
+		from post
+		where category_no = #{categoryNo }
+		and no = #{postNo }
+	 ]]>	
+	</select>
+
+	<select id="caNoPost" parameterType="long" resultType="postvo">
+	<![CDATA[
+		select title, contents, date_format(post.postdate, "%Y년 %m월 %d일") as postdate
+		from post
+		where category_no = #{categoryNo }
+	 ]]>	
+	</select>
+	
+
+</mapper>

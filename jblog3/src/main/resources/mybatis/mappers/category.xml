@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="category">
+	
+	<insert id="joinFirst" parameterType="categoryvo">
+		<![CDATA[
+			insert into category values(null, "기본", "기본 카테고리 입니다.", now(), #{id})
+		]]>
+	</insert>
+	
+	<insert id="insert" parameterType="categoryvo">
+		<![CDATA[
+			insert into category values(null, #{name}, #{info}, now(), #{id})
+		]]>
+	</insert>
+	
+	<delete id="delete" parameterType="map">
+		<![CDATA[
+			delete from category where no=${no} and id=#{userId}
+		]]>
+	</delete>
+	
+	<select id="getList" parameterType="String" resultType="categoryvo">
+		<![CDATA[
+			select category.no as no, category.name as name, category.info as info, category.id as id, count(post.category_no) as count 
+			from category 
+			left join post 
+			on category.no=post.category_no 
+			where category.id= #{userId} 
+			group by category.no 
+			order by category.no;
+		]]>
+	</select>
+	
+	
+</mapper>
+
